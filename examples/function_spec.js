@@ -31,7 +31,7 @@ var userSettings = {
     },
 };
 
-describe('function node', function() {
+describe('node-red-node-test-helper', function() {
 
     beforeEach(function(done) {
         helper.startServer(done);
@@ -51,7 +51,7 @@ describe('function node', function() {
         done();
     });
 
-    it('should access functionGlobalContext set via helper settings()', function(done) {
+    it('should provide functionGlobalContext set via helper settings()', function(done) {
         helper.settings(userSettings);
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
@@ -78,6 +78,27 @@ describe('function node', function() {
         helper.settings(userSettings);
         // Fails because it tries to define a get() property on userSettings.functionGlobalContext,
         // but it already exists.
+        helper.load(functionNode, flow, function() {
+            var n1 = helper.getNode("n1");
+            var n2 = helper.getNode("n2");
+            n2.on("input", function(msg) {
+                msg.should.have.property('payload', 'bar');
+                done();
+            });
+            n1.receive({payload:"replaceme"});
+        });
+        helper.settings({});
+    });
+
+    it('should work again with a fresh userSettings object (work-around)', function(done) {
+        userSettings = {
+            functionGlobalContext: {
+                foo: (function() {
+                    return 'bar';
+                })(),
+            },
+        };
+        helper.settings(userSettings);
         helper.load(functionNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
