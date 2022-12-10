@@ -13,7 +13,7 @@
     "url": "https://github.com/node-red/node-red-node-test-helper.git"
   },
   "dependencies": {
-    "express": "4.17.1",
+    "express": "4.17.3",
     "node-red": "^0.20.7",
     "read-pkg-up": "3.0.0",
     "semver": "6.2.0",
